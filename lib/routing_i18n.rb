@@ -24,6 +24,7 @@ module RoutingI18n
   end
 
   ::ActionDispatch::Routing::Mapper.send(:include, Mapper)
+  ::ActionDispatch::Routing::Mapper::Mapping::IGNORE_OPTIONS << :i18n
   ::ActionDispatch::Routing::RouteSet::NamedRouteCollection.send(:include, NamedRouteCollection)
   ::ActionDispatch::Routing::Mapper::Resources::Resource.send(:include, Resource)
 end
