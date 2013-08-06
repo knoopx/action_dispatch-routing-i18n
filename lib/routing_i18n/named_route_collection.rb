@@ -11,10 +11,19 @@ module RoutingI18n
       initialize_without_i18n
 
       @module.class_eval do
-        def method_missing(name, *args, &block)
-          method_name = :"#{name.to_s.gsub(/_(path|url)\Z/, "")}_#{RoutingI18n.suffix}_#{$1}"
-          respond_to?(method_name) ? send(method_name, *args, &block) : super
+        def method_missing(method_name, *args, &block)
+          method_name_with_i18n_suffix = RoutingI18n.url_helper_method_name_with_i18n_suffix(method_name)
+          method_name_with_i18n_suffix && respond_to_without_i18n?(method_name_with_i18n_suffix) ?
+              send(method_name_with_i18n_suffix, *args, &block) : super
         end
+
+        def respond_to_with_i18n?(method_name, include_private = false)
+          method_name_with_i18n_suffix = RoutingI18n.url_helper_method_name_with_i18n_suffix(method_name)
+          method_name_with_i18n_suffix && respond_to_without_i18n?(method_name_with_i18n_suffix) ?
+              true : respond_to_without_i18n?(method_name, include_private)
+        end
+
+        alias_method_chain :respond_to?, :i18n
       end
     end
   end

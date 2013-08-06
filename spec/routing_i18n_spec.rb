@@ -115,6 +115,15 @@ describe RoutingI18n do
       it "fallbacks to current locale when calling an non-i18n url helper" do
         I18n.with_locale(:ca) { path(:user_organizations, 1).should == "/usuaris/1/organitzacions" }
       end
+
+      it "responds to non-i18n url helper method names if it has a fallback for the current locale" do
+        I18n.with_locale(:ca) { routes.url_helpers.should respond_to(:user_organizations_path) }
+      end
+
+      it "does not respond to undefined methods" do
+        I18n.with_locale(:ca) { routes.url_helpers.should_not respond_to(:unknown) }
+      end
+
     end
   end
 end

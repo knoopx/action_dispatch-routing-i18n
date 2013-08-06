@@ -21,6 +21,11 @@ module RoutingI18n
     def suffix
       ::I18n.locale.to_s.downcase.gsub(/\-/, "_")
     end
+
+    def url_helper_method_name_with_i18n_suffix(name)
+      method_name = name.to_s.gsub(/_(path|url)\Z/, "")
+      $1 && :"#{method_name}_#{RoutingI18n.suffix}_#{$1}"
+    end
   end
 
   ::ActionDispatch::Routing::Mapper.send(:include, Mapper)
