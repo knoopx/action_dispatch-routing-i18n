@@ -15,8 +15,10 @@ module Helpers
     end
 
     def locale(locale, data)
-      before { I18n.backend.send(:translations).clear }
-      before { I18n.backend.store_translations(locale, YAML.load(data)) }
+      before do
+        I18n.backend.send(:translations).clear
+        I18n.backend.store_translations(locale, YAML.load(data))
+      end
     end
   end
 
@@ -37,6 +39,12 @@ module Helpers
     route_set.routes.to_a.each do |route|
       puts [route.name.to_s.rjust(width), route.path.spec.to_s].join("  ")
     end
+  end
+end
+
+class PagesController < ActionController::Base
+  def about
+    render text: "About"
   end
 end
 

@@ -58,12 +58,8 @@ module RoutingI18n
 
     def name_for_action_with_i18n_suffix(as, action)
       name = name_for_action_without_i18n_suffix(as, action)
-
-      if !name.blank? && i18n?
-        with_i18n { [name, RoutingI18n.suffix].join("_") }
-      else
-        name
-      end
+      candidate = (i18n? && !name.blank?) ? with_i18n { [name, RoutingI18n.suffix].join("_") } : name
+      candidate unless @set.routes.find { |r| r.name == candidate } || candidate !~ /\A[_a-z]/i
     end
   end
 end

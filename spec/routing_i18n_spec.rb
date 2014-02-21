@@ -53,7 +53,7 @@ describe RoutingI18n do
   context do
     draw do
       scope(i18n: :ca) do
-        get :about_us, to: "PageController#about", as: :about_us
+        get :about_us, to: "pages#about", as: :about_us
         resource :organization
         resources :users, only: :new do
           post :ban, on: :member
