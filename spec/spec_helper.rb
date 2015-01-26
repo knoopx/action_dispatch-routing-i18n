@@ -1,6 +1,6 @@
 require 'rspec'
 require 'active_support/concern'
-require 'routing_i18n'
+require 'action_dispatch/routing/i18n'
 
 module Helpers
   extend ActiveSupport::Concern
@@ -40,4 +40,5 @@ module Helpers
   end
 end
 
+I18n.available_locales = [:en, :es, :ca]
 RSpec.configure { |c| c.include Helpers }

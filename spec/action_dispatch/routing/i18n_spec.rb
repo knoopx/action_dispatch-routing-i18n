@@ -1,20 +1,38 @@
 require 'spec_helper'
 
-describe RoutingI18n do
+describe ActionDispatch::Routing::I18n do
+  locale :ca, <<-YAML
+    routes:
+      path_names:
+        about_us: sobre-nosaltres
+        edit: editar
+      resource:
+        organization:
+          path: organitzacio
+      resources:
+        organizations:
+          path: organitzacions
+        users:
+          path: usuaris
+          path_names:
+            new: nou-usuari
+            ban: bloquejar
+  YAML
+
   context do
     context do
-      draw { scope(i18n: :ca) { scope(i18n: :en) {} } }
+      draw { scope(locale: :ca) { scope(locale: :en) {} } }
 
       it "prevents nesting I18n scopes" do
-        expect { routes }.to raise_error("Nesting i18n scopes is not allowed!")
+        expect { routes }.to raise_error("Nesting locale scopes is not allowed!")
       end
     end
 
     it "properly merges i18n scopes" do
       route_set do
-        scope(i18n: :es) do
+        scope(locale: :es) do
           scope(path: :admin) do
-            @scope[:i18n].should == :es
+            @scope[:locale].should == :es
           end
         end
       end
@@ -22,28 +40,19 @@ describe RoutingI18n do
   end
 
   context do
-    draw { scope(path: :ca, i18n: :ca) { resources(:users, only: :new) } }
+    draw { scope(path: :ca, locale: :ca) { resources(:organizations, only: :new) } }
     it "accepts other scope options" do
-      path(:new_user_ca).should == "/ca/users/new"
+      path(:new_organization_ca).should == "/ca/organitzacions/new"
     end
   end
 
   context do
     draw do
-      scope(i18n: :ca) do
+      scope(locale: :ca) do
         resources :organizations
       end
       resources :users
     end
-
-    locale :ca, <<-YAML
-    routes:
-      resources:
-        organizations:
-          path: organitzacions
-        users:
-          path: usuaris
-    YAML
 
     it "does not suffix untranslated routes" do
       expect { path(:users_en) }.to raise_exception(NoMethodError)
@@ -52,8 +61,8 @@ describe RoutingI18n do
 
   context do
     draw do
-      scope(i18n: :ca) do
-        get :about_us, to: "PageController#about", as: :about_us
+      scope(locale: :ca) do
+        get :about_us, to: "pages_controller#about", as: :about_us
         resource :organization
         resources :users, only: :new do
           post :ban, on: :member
@@ -63,15 +72,8 @@ describe RoutingI18n do
     end
 
     context do
-      locale :ca, <<-YAML
-        routes:
-          path_names:
-            new: nou
-            about_us: sobre-nosaltres
-      YAML
-
       it "translates globally defined path names" do
-        path(:new_user_ca).should == "/users/nou"
+        path(:edit_organization_ca).should == "/organitzacio/editar"
       end
 
       it "translates global user-defined path names" do
@@ -80,22 +82,6 @@ describe RoutingI18n do
     end
 
     context do
-      locale :ca, <<-YAML
-        routes:
-          resource:
-            organization:
-              path: organitzacio
-
-          resources:
-            organizations:
-              path: organitzacions
-            users:
-              path: usuaris
-              path_names:
-                new: nou-usuari
-                ban: bloquejar
-      YAML
-
       it "translates resource path names" do
         path(:new_user_ca).should == "/usuaris/nou-usuari"
       end
