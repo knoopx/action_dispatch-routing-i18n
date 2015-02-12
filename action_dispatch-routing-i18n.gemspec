@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Victor Martinez"]
   spec.email         = ["knoopx@gmail.com"]
   spec.summary       = %q{Minimalist I18n for Rails routes}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/knoopx/action_dispatch-routing-i18n/"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
