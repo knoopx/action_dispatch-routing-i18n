@@ -6,7 +6,7 @@ module ActionDispatch
     module I18n
       class << self
         def resource_path(resource)
-          ::I18n.t!(:path, scope: [:routes, resource_kind(resource), resource.name])
+          ::I18n.t(:path, scope: [:routes, resource_kind(resource), resource.name], default: resource.name)
         end
 
         def resource_kind(resource)
